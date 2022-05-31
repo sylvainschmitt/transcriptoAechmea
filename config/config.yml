@@ -4,4 +4,36 @@
 ressources: "ressources.genologin.yaml"
 
 data: "../data/Aechmea"
-libraries: ['ag02a_TCTGCTGT_L003', 'ag01_ATCACGTT_L006']
+libraries: ["ag01_ATCACGTT_L006",
+            "ag02a_TCTGCTGT_L003",
+            "ag02_TCTGCTGT_L004",
+            "ag03a_TAGCTTGT_L002",
+            "ag03b_TAGCTTGT_L004",
+            "ag04a_TCGAGCGT_L005",
+            "ag04b_TCGAGCGT_L004",
+            "ag06_TGTTCTCC_L006",
+            "ag08_GTGTCCTT_L006",
+            "ag09_TTGCGTAC_L002",
+            "ag10_GAGCCAAT_L006",
+            "ag11_TAAGTTCG_L006",
+            "ag12_GACGGATT_L006",
+            "ag13_GTCGCTAT_L006",
+            "ag14_TCATCCTA_L006",
+            "ag15_TAACGCTG_L006",
+            "ag16_TTGACTCT_L006",
+            "ag17a_TCGAAGTG_L005",
+            "ag17b_TCGAAGTG_L004",
+            "ag18_TGCGTGAA_L006",
+            "ag19a_TCCGTCTT_L005",
+            "ag19b_TCCGTCTT_L004",
+            "ag22_TATGTGGC_L006",
+            "ag23_GAGGTGCT_L006",
+            "ag24_TCGTTAGC_L006",
+            "ag25a_TAAGCGTT_L008",
+            "ag25b_TAAGCGTT_L004",
+            "ag26_TAGTGACT_L006",
+            "ag27_GATTCATC_L006",
+            "ag28_TCTCTTCA_L006",
+            "ag29_GATCAGCG_L002",
+            "ag30_GCTAACTC_L006"]
+
