@@ -10,6 +10,7 @@ rule trinity:
         "results/benchmarks/trinity.benchmark.txt"
     singularity:
         "https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg"
+        # "/home/ECOFOG/sylvain.schmitt/Documents/singularity/trinity.simg"
     threads: 4
     resources:
         mem_mb=10000
@@ -17,7 +18,5 @@ rule trinity:
         left_str=lambda wildcards, input: ",".join(input.left),
         right_str=lambda wildcards, input: ",".join(input.right),
         max_mem = lambda wildcards, resources: int(resources.mem_mb / 1000)
-        # input_str_left = " --left " + ",".join(left)
-        # input_str_right = " --right " + ",".join(right)
     shell:
         "Trinity --seqType fq --left {params.left_str} --right {params.right_str} --max_memory {params.max_mem}G --CPU {threads} --output {output}"
