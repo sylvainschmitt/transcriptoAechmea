@@ -6,9 +6,10 @@ May 31, 2022
   - [Installation](#installation)
   - [Usage](#usage)
       - [Locally](#locally)
-      - [HPC](#hpc)
+      - [genologin](#genologin)
+      - [Tabebuia](#tabebuia)
   - [Workflow](#workflow)
-      - [[trinity](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity.smk)](#trinity)
+      - [All](#all)
 
 [`singularity` &
 `snakemake`](https://github.com/sylvainschmitt/snakemake_singularity)
@@ -64,7 +65,7 @@ snakemake --dag | dot -Tsvg > dag/dag.svg # dag
 snakemake --use-singularity -j 3 --resources mem_mb=10000 # run
 ```
 
-## HPC
+## genologin
 
 ``` bash
 module load bioinfo/snakemake-5.25.0 # for test on node
@@ -73,7 +74,17 @@ sbatch job.sh # run
 snakemake --dag | dot -Tsvg > dag/dag.svg # dag
 ```
 
+## Tabebuia
+
+``` bash
+snakemake -np -j 15 # dry run
+snakemake -j 15 --use-singularity --singularity-args "\-B /home/ECOFOG/sylvain.schmitt/Documents/data/Aechmea" # run with binded data
+snakemake --dag | dot -Tsvg > dag/dag.svg # dag
+```
+
 # Workflow
+
+## All
 
 ### [trinity](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity.smk)
 
