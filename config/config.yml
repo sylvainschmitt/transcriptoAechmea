@@ -5,8 +5,7 @@ ressources: "ressources.genologin.yaml"
 
 data: "../data/Aechmea"
 libraries: ["ag01_ATCACGTT_L006",
-            "ag02a_TCTGCTGT_L003",
-            "ag02_TCTGCTGT_L004",
+          #   "ag02_TCTGCTGT_L004", corrupted file with no end in R2
             "ag03a_TAGCTTGT_L002",
             "ag03b_TAGCTTGT_L004",
             "ag04a_TCGAGCGT_L005",

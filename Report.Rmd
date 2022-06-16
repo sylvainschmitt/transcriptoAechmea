@@ -1,0 +1,155 @@
+---
+title: "*Aechmea* transcriptomics"
+author: "Sylvain Schmitt"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  bookdown::html_document2:
+    number_sections: false  
+    toc: true
+    toc_float: true
+linestretch: 1.5
+---
+
+```{r setup, include=FALSE}
+# libraries
+set.seed(42)
+library(knitr)
+library(tidyverse)
+library(vroom)
+# bayesplot
+library(dtplyr)
+theme_set(bayesplot::theme_default())
+opts_chunk$set(
+  echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
+  cache = F, cache.lazy = F)
+```
+
+```{r samplefile, eval=F}
+data.frame(left = list.files("../data/Aechmea", full = "T", pattern = "R1"),
+           right = list.files("../data/Aechmea", full = "T", pattern = "R2")) %>% 
+  mutate(lib = gsub("../data/Aechmea/", "", left)) %>% 
+  separate(lib, "lib", "_") %>% 
+  mutate(ind = str_sub(lib, 1, 4)) %>% 
+  mutate(ind = toupper(ind)) %>% 
+  left_join(read_tsv("data/Aechmea.tsv", col_names = c("ind", "cond"), skip = 1)) %>% 
+  dplyr::select(cond, lib, left, right) %>% 
+  write_tsv("data/sample.tsv", col_names = F)
+```
+
+# Introduction
+
+# Quality check
+
+## Reads representation
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/RNA-Seq-Read-Representation-by-Trinity-Assembly).*
+
+Assembled transcripts might not always fully represent properly paired-end reads, as some transcripts may be fragmented or short and only one fragment read of a pair may align. To assess the read composition of our assembly, we want to capture and count all reads that map to our assembled transcripts, including the properly paired and those that are not.
+
+## Full-length transcript 
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Counting-Full-Length-Trinity-Transcripts).*
+
+One metric for evaluating the quality of a transcriptome assembly is to examine the number of transcripts that were assembled that appear to be full-length or nearly full-length. A general analysis to perform is to align the assembled transcripts against all known proteins and to determine the number of unique top matching proteins that align across more than X% of its length.
+
+```{r fulllength, fig.cap="Caption."}
+# read_tsv("results/quality/full_length/blastx.outfmt6.txt.w_pct_hit_length")
+```
+
+## Conserved ortholog content
+
+*Methodology from [BUSCO](https://busco.ezlab.org/).*
+
+Based on evolutionarily-informed expectations of gene content of near-universal single-copy orthologs, BUSCO metric is complementary to technical metrics like N50. We have very good BUSCO results with no missing genes (Fig. \@ref(fig:busco)) and only 6 fragmented.
+
+```{r busco, fig.cap="BUSCO results for *Aechmea* transcripts."}
+read_tsv("results/quality/aechmea_busco/short_summary.specific.viridiplantae_odb10.aechmea_busco.txt",
+         skip = 10, n_max = 4, col_names = c("X1", "N", "Type")) %>% 
+  dplyr::select(-X1) %>% 
+  mutate(Type = factor(Type, levels= c("Complete and single-copy BUSCOs (S)",
+                                       'Complete and duplicated BUSCOs (D)',
+                                       "Fragmented BUSCOs (F)",
+                                       "Missing BUSCOs (M)"))) %>% 
+  ggplot(aes("", N, fill = Type)) +
+  geom_col() +
+  geom_text(aes(y = N, label = N), col = "white", position = position_stack(vjust = .5)) +
+  scale_y_sqrt() +
+  theme_void()
+```
+
+## N50 and E90N50 Statistics
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Transcriptome-Contig-Nx-and-ExN50-stats).*
+
+Based on the lengths of the assembled transcriptome contigs, we can compute the conventional Nx length statistic, such that at least x% of the assembled transcript nucleotides are found in contigs that are at least of Nx length. The traditional method is computing N50, such that at least half of all assembled bases are in transcript contigs of at least the N50 length value. The contig N50 values can often be exaggerated due to an assembly program generating too many transcript isoforms, especially for the longer transcripts. An alternative to the Contig Nx statistic that could be considered more appropriate for transcriptome assembly data is the ExN50 statistic. Here, the N50 statistic is computed as above but limited to the top most highly expressed genes that represent x% of the total normalized expression data. The gene expression is take as the sum of the transcript isoform expression and the gene length is computed as the expression-weighted mean of isoform lengths.
+
+```{r exnx, fig.cap="Caption."}
+# "results/quality/stats/aechmea_stats.txt",
+# "results/quality/stats/aechmea_ExN50_stats.txt"
+```
+
+## Strand Specificity
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Examine-Strand-Specificity).*
+
+You an estimate the level of strand-specificity of your RNA-Seq data by aligning the reads back to your Trinity assembly and examining the distribution of RNA-Seq read (or fragment) orientations on those assemblies.
+
+## rnaQUAST
+
+*Methodology from [rnaQUAST](https://github.com/ablab/rnaquast).*
+
+rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and de novo quality assessment using third-party software.
+
+## Samples and biological Replicates
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/QC-Samples-and-Biological-Replicates).*
+
+Ensure that your biological replicates are well correlated, and investigate relationships among samples. If there are any obvious discrepancies among samples and replicate srelationships such as due to accidental mis-labeling of sample replicates, or strong outliers or batch effects, we'll identify them before proceeding to subsequent data analyses (such as differential expression).
+
+# Quantification
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Transcript-Quantification).*
+
+# Differential expression
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Differential-Expression).*
+
+Our current system for identifying differentially expressed transcripts relies on using the `EdgeR` Bioconductor package. We have a protocol and scripts described below for identifying differentially expressed transcripts and clustering transcripts according to expression profiles. This process is somewhat interactive, and described are automated approaches as well as manual approaches to refining gene clusters and examining their corresponding expression patterns.
+
+# Super transcripts
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/SuperTranscripts).*
+
+SuperTranscripts provide a gene-like view of the transcriptional complexity of a gene. SuperTranscripts were originally defined by Nadia Davidson, Anthony Hawkins, and Alicia Oshlack as described in their publication "SuperTranscripts: a data driven reference for analysis and visualisation of transcriptomes" Genome Biology, 2017. SuperTranscripts are useful in the context of genome-free de novo transcriptome assembly in that they provide a genome-like reference for studying aspects of the gene including differential transcript usage (aka. differential exon usage) and as a substrate for mapping reads and identifying allelic polymorphisms.
+
+A SuperTranscript is constructed by collapsing unique and common sequence regions among splicing isoforms into a single linear sequence. An illustration of this is shown below:
+
+```{r supertranscripts, fig.cap="Caption."}
+knitr::include_graphics("https://raw.githubusercontent.com/wiki/trinityrnaseq/trinityrnaseq/images/supertranscript.png")
+```
+
+## Differential transcript usage
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/DiffTranscriptUsage).*
+
+Using SuperTranscripts, we can explore differential transcript usage (DTU). Differential transcript usage analysis is complementary to differential gene expression (DGE) and differential transcript expression (DTE) analysis. For details on how DTU, DGE, and DTE compare, see "Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences" by Soneson, Love, and Robinson; F1000 2016. 
+
+## Variant calling
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Variant-Calling).*
+
+# Annotation
+
+## Coding regions
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Coding-Region-Identification-in-Trinity-Assemblies).*
+
+## Functional annotation
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Functional-Annotation-of-Transcripts).*
+
+## gene ontology enrichment
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-GOSeq).*
+
+# Conclusion
