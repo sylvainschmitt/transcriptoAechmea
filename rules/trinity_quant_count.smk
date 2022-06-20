@@ -1,4 +1,4 @@
-rule trinity_quantification:
+rule trinity_quant_count:
     input:
         "results/quality/quantification/genes_matrix.TPM.not_cross_norm",
         "results/quality/quantification/trans_matrix.TPM.not_cross_norm"
@@ -6,9 +6,9 @@ rule trinity_quantification:
         "results/quality/quantification/genes_matrix.TPM.not_cross_norm.counts_by_min_TPM",
         "results/quality/quantification/trans_matrix.TPM.not_cross_norm.counts_by_min_TPM"
     log:
-        "results/logs/trinity_quantification.log"
+        "results/logs/trinity_quant_count.log"
     benchmark:
-        "results/benchmarks/trinity_quantification.benchmark.txt"
+        "results/benchmarks/trinity_quant_count.benchmark.txt"
     singularity:
         "/home/ECOFOG/sylvain.schmitt/Documents/singularity/trinity.simg"
     shell:

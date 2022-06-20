@@ -1,13 +1,13 @@
-rule trinity_quantification:
+rule trinity_quant_matrix:
     input:
         gene_trans_map="results/transcriptome/aechmea.fa.gene_trans_map",
         samples=""
     output:
         "results/quality/quantification/aechmea.TMM.EXPR.matrix"
     log:
-        "results/logs/trinity_quantification.log"
+        "results/logs/trinity_quant_matrix.log"
     benchmark:
-        "results/benchmarks/trinity_quantification.benchmark.txt"
+        "results/benchmarks/trinity_quant_matrix.benchmark.txt"
     singularity:
         "/home/ECOFOG/sylvain.schmitt/Documents/singularity/trinity.simg"
     shell:

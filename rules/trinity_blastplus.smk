@@ -4,7 +4,7 @@ rule trinity_blastplus:
         "results/transcriptome/aechmea.fa",
         "results/quality/full_length/blastx.outfmt6"
     output:
-        "results/quality/full_length/blastx.outfmt6.txt.w_pct_hit_length"
+        "results/quality/full_length/blastx.outfmt6.hist"
     log:
         "results/logs/trinity_blastplus.log"
     benchmark:
