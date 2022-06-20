@@ -19,8 +19,9 @@ rule trinity:
     params:
         left_str=lambda wildcards, input: ",".join(input.left),
         right_str=lambda wildcards, input: ",".join(input.right),
-        max_mem = lambda wildcards, resources: int(resources.mem_mb / 1000)
+        max_mem = lambda wildcards, resources: int(resources.mem_mb / 1000),
+        dir="results/transcriptome/trinity"
     shell:
-        "Trinity --seqType fq --left {params.left_str} --right {params.right_str} --max_memory {params.max_mem}G --CPU {threads} --output {outpu[0]} ; "
-        "mv {params.dir}trinity.Trinity.fasta {outpu[1]} ;"
-        "mv {params.dir}trinity.Trinity.fasta.gene_trans_map {outpu[2]}"
+        "Trinity --seqType fq --left {params.left_str} --right {params.right_str} --max_memory {params.max_mem}G --CPU {threads} --output {output[0]} ; "
+        "mv {params.dir}trinity.Trinity.fasta {output[1]} ;"
+        "mv {params.dir}trinity.Trinity.fasta.gene_trans_map {output[2]}"

@@ -38,6 +38,10 @@ data.frame(left = list.files("../data/Aechmea", full = "T", pattern = "R1"),
 
 # Introduction
 
+# Methods
+
+The full `singularity` and `snakemake` pipeline is available and described [here](https://github.com/sylvainschmitt/transcriptoAechmea).
+
 # Quality check
 
 ## Reads representation
@@ -93,12 +97,6 @@ Based on the lengths of the assembled transcriptome contigs, we can compute the 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Examine-Strand-Specificity).*
 
 You an estimate the level of strand-specificity of your RNA-Seq data by aligning the reads back to your Trinity assembly and examining the distribution of RNA-Seq read (or fragment) orientations on those assemblies.
-
-## rnaQUAST
-
-*Methodology from [rnaQUAST](https://github.com/ablab/rnaquast).*
-
-rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and de novo quality assessment using third-party software.
 
 ## Samples and biological Replicates
 

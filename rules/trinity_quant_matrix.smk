@@ -1,7 +1,7 @@
 rule trinity_quant_matrix:
     input:
         gene_trans_map="results/transcriptome/aechmea.fa.gene_trans_map",
-        samples=""
+        samples="data/sample.tsv"
     output:
         "results/quality/quantification/aechmea.TMM.EXPR.matrix"
     log:
