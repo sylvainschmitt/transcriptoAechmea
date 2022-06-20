@@ -1,10 +1,10 @@
-configfile: "config/config.dag.yml"
+configfile: "config/config.yml"
 
 rule all:
    input:
         "results/transcriptome/aechmea.fa", # trsc 
         "results/quality/aechmea_busco", # qc 
-        "results/quality/full_length/blastx.outfmt6.txt.w_pct_hit_length",
+        "results/quality/full_length/blastx.outfmt6.hist",
         "results/quality/reads_reps/align_stats.txt",
         "results/quality/stats/aechmea_stats.txt",
         "results/quality/stats/aechmea_ExN50_stats.txt",

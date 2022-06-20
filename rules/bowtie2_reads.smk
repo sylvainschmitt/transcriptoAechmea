@@ -13,7 +13,7 @@ rule bowtie2_reads:
     benchmark:
         "results/benchmarks/bowtie2_reads.benchmark.txt"
     singularity:
-        "docker://biocontainers/bowtie2"
+        "docker://biocontainers/bowtie2:v2.4.1_cv1"
     threads: 10
     resources:
         mem_mb=100000
