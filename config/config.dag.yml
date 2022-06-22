@@ -5,3 +5,4 @@ ressources: "ressources.genologin.yaml"
 
 data: "../data/Aechmea"
 libraries: ['ag02a_TCTGCTGT_L003', 'ag01_ATCACGTT_L006']
+lib_test: "ag02a_TCTGCTGT_L003"
