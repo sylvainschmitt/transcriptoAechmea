@@ -1,10 +1,10 @@
 rule trinity_quant_count:
     input:
-        "results/quality/quantification/genes_matrix.TPM.not_cross_norm",
-        "results/quality/quantification/trans_matrix.TPM.not_cross_norm"
+        "results/quantification/RSEM.gene.TPM.not_cross_norm",
+        "results/quantification/RSEM.isoform.TPM.not_cross_norm"
     output:
-        "results/quality/quantification/genes_matrix.TPM.not_cross_norm.counts_by_min_TPM",
-        "results/quality/quantification/trans_matrix.TPM.not_cross_norm.counts_by_min_TPM"
+        "results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM",
+        "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM"
     log:
         "results/logs/trinity_quant_count.log"
     benchmark:

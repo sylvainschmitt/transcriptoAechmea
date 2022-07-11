@@ -2,7 +2,7 @@ rule trinity_strand:
     input:
         "results/quality/reads_reps/bowtie2.coordSorted.bam"
     output:
-        "results/quality/reads_reps/bowtie2.coordSorted.bam.strand.stats"
+        "results/quality/reads_reps/ss_analysis.dat"
     log:
         "results/logs/trinity_strand.log"
     benchmark:

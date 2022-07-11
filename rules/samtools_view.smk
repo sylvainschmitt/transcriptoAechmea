@@ -8,6 +8,6 @@ rule samtools_view:
     benchmark:
         "results/benchmarks/samtools_view.benchmark.txt"
     singularity:
-        "docker://biocontainers/samtools"
+        "docker://biocontainers/samtools:v1.9-4-deb_cv1"
     shell:
         "samtools view -Sb {input} | samtools sort -o {output}"

@@ -35,4 +35,4 @@ libraries: ["ag01_ATCACGTT_L006",
             "ag28_TCTCTTCA_L006",
             "ag29_GATCAGCG_L002",
             "ag30_GCTAACTC_L006"]
-
+lib_test: "ag08_GTGTCCTT_L006"
