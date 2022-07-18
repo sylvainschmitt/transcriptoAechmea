@@ -4,7 +4,7 @@ rule trinity_super_de:
         "results/super/trinity_genes.gtf",
         "data/sample.tsv"
     output:
-        "place_holder"
+        "results/super/expression/DTU.dexseq.results.dat"
     log:
         "results/logs/trinity_super_de.log"
     benchmark:

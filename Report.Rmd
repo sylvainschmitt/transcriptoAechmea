@@ -49,15 +49,31 @@ The full `singularity` and `snakemake` pipeline is available and described [here
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/RNA-Seq-Read-Representation-by-Trinity-Assembly).*
 
 Assembled transcripts might not always fully represent properly paired-end reads, as some transcripts may be fragmented or short and only one fragment read of a pair may align. To assess the read composition of our assembly, we want to capture and count all reads that map to our assembled transcripts, including the properly paired and those that are not.
+We obtained a very good realignments representation with 96.57% of realignments for the biggest library (Fig. \@ref(fig:readreps)).
+
+```{r readreps, fig.cap="Realignments representation for library ag08 on the de novo transcriptome."}
+t <- read_delim("results/quality/reads_reps/align_stats.txt", delim = " ", skip = 2, n_max = 3, col_names = c("number", "percentage", paste0("X", 1:4))) %>% 
+  mutate(type = paste(X1, X2, X3, X4)) %>% dplyr::select(-X1, -X2, -X3, -X4) %>% mutate(number = as.numeric(number))
+pie(t$number, t$type, main = read_lines("results/quality/reads_reps/align_stats.txt", skip = 14)) ; rm(t)
+```
+
 
 ## Full-length transcript 
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Counting-Full-Length-Trinity-Transcripts).*
 
-One metric for evaluating the quality of a transcriptome assembly is to examine the number of transcripts that were assembled that appear to be full-length or nearly full-length. A general analysis to perform is to align the assembled transcripts against all known proteins and to determine the number of unique top matching proteins that align across more than X% of its length.
+One metric for evaluating the quality of a transcriptome assembly is to examine the number of transcripts that were assembled that appear to be full-length or nearly full-length. A general analysis to perform is to align the assembled transcripts against all known proteins and to determine the number of unique top matching proteins that align across more than X% of its length. We have 47% of conserved proteins (>80%) in the transcripts (Fig. \@ref(fig:fulllength)), which is very good.
 
-```{r fulllength, fig.cap="Caption."}
-# read_tsv("results/quality/full_length/blastx.outfmt6.txt.w_pct_hit_length")
+```{r fulllength, fig.cap="Full-length transcripts by comparison with SwissProt."}
+read_tsv("results/quality/full_length/blastx.outfmt6.hist", 
+         col_names = c("pct_cov", "Proteins count", "Proteins cummulative count"), skip = 1) %>% 
+  reshape2::melt("pct_cov") %>% 
+  ggplot(aes(as.factor(pct_cov), value, label = format(value, big.mark = " "))) +
+  geom_col() +
+  facet_wrap(~ variable, scales = "free") +
+  coord_flip() +
+  geom_text(aes(y = 0.5*value), col = "white") +
+  ylab("") + xlab("Protein lengths coverage (%)")
 ```
 
 ## Conserved ortholog content

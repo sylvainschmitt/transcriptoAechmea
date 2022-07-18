@@ -25,7 +25,7 @@ rule all:
         "results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf",
         "results/super/trinity_genes.fasta", # super trsc 
         "results/super/trinity_genes.gtf",
-        "place_holder"
+        "results/super/expression/DTU.dexseq.results.dat"
 
 # Rules #
 
