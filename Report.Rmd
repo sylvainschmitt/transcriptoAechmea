@@ -49,7 +49,7 @@ The full `singularity` and `snakemake` pipeline is available and described [here
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/RNA-Seq-Read-Representation-by-Trinity-Assembly).*
 
 Assembled transcripts might not always fully represent properly paired-end reads, as some transcripts may be fragmented or short and only one fragment read of a pair may align. To assess the read composition of our assembly, we want to capture and count all reads that map to our assembled transcripts, including the properly paired and those that are not.
-We obtained a very good realignments representation with 96.57% of realignments for the biggest library (Fig. \@ref(fig:readreps)).
+We obtained a very good realignments representation with 96.36% of realignments for the biggest library (Fig. \@ref(fig:readreps)).
 
 ```{r readreps, fig.cap="Realignments representation for library ag08 on the de novo transcriptome."}
 t <- read_delim("results/quality/reads_reps/align_stats.txt", delim = " ", skip = 2, n_max = 3, col_names = c("number", "percentage", paste0("X", 1:4))) %>% 
@@ -62,7 +62,7 @@ pie(t$number, t$type, main = read_lines("results/quality/reads_reps/align_stats.
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Counting-Full-Length-Trinity-Transcripts).*
 
-One metric for evaluating the quality of a transcriptome assembly is to examine the number of transcripts that were assembled that appear to be full-length or nearly full-length. A general analysis to perform is to align the assembled transcripts against all known proteins and to determine the number of unique top matching proteins that align across more than X% of its length. We have 47% of conserved proteins (>80%) in the transcripts (Fig. \@ref(fig:fulllength)), which is very good.
+One metric for evaluating the quality of a transcriptome assembly is to examine the number of transcripts that were assembled that appear to be full-length or nearly full-length. A general analysis to perform is to align the assembled transcripts against all known proteins and to determine the number of unique top matching proteins that align across more than X% of its length. We have 48% of conserved proteins (>80%) in the transcripts (Fig. \@ref(fig:fulllength)), which is very good.
 
 ```{r fulllength, fig.cap="Full-length transcripts by comparison with SwissProt."}
 read_tsv("results/quality/full_length/blastx.outfmt6.hist", 
@@ -97,38 +97,149 @@ read_tsv("results/quality/aechmea_busco/short_summary.specific.viridiplantae_odb
   theme_void()
 ```
 
-## N50 and E90N50 Statistics
+## N50 Statistics
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Transcriptome-Contig-Nx-and-ExN50-stats).*
 
-Based on the lengths of the assembled transcriptome contigs, we can compute the conventional Nx length statistic, such that at least x% of the assembled transcript nucleotides are found in contigs that are at least of Nx length. The traditional method is computing N50, such that at least half of all assembled bases are in transcript contigs of at least the N50 length value. The contig N50 values can often be exaggerated due to an assembly program generating too many transcript isoforms, especially for the longer transcripts. An alternative to the Contig Nx statistic that could be considered more appropriate for transcriptome assembly data is the ExN50 statistic. Here, the N50 statistic is computed as above but limited to the top most highly expressed genes that represent x% of the total normalized expression data. The gene expression is take as the sum of the transcript isoform expression and the gene length is computed as the expression-weighted mean of isoform lengths.
+Based on the lengths of the assembled transcriptome contigs, we can compute the conventional Nx length statistic, such that at least x% of the assembled transcript nucleotides are found in contigs that are at least of Nx length. The traditional method is computing N50, such that at least half of all assembled bases are in transcript contigs of at least the N50 length value. 
+
+```{r nx, fig.cap="Caption."}
+read_lines("results/quality/stats/aechmea_stats.txt", skip = 25) %>% 
+  paste(collapse = "\n") %>% 
+  cat()
+```
+
+## E90N50 Statistics
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Transcriptome-Contig-Nx-and-ExN50-stats).*
+
+The contig N50 values can often be exaggerated due to an assembly program generating too many transcript isoforms, especially for the longer transcripts. An alternative to the Contig Nx statistic that could be considered more appropriate for transcriptome assembly data is the ExN50 statistic. Here, the N50 statistic is computed as above but limited to the top most highly expressed genes that represent x% of the total normalized expression data. The gene expression is take as the sum of the transcript isoform expression and the gene length is computed as the expression-weighted mean of isoform lengths.
 
 ```{r exnx, fig.cap="Caption."}
-# "results/quality/stats/aechmea_stats.txt",
-# "results/quality/stats/aechmea_ExN50_stats.txt"
+vroom("results/quality/stats/aechmea_ExN50_stats.txt") %>% 
+  ggplot(aes(Ex, ExN50)) +
+  geom_point() +
+  geom_line()
 ```
 
 ## Strand Specificity
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Examine-Strand-Specificity).*
 
-You an estimate the level of strand-specificity of your RNA-Seq data by aligning the reads back to your Trinity assembly and examining the distribution of RNA-Seq read (or fragment) orientations on those assemblies.
+We can estimate the level of strand-specificity of the RNA-Seq data by aligning the reads back to your Trinity assembly and examining the distribution of RNA-Seq read (or fragment) orientations on those assemblies.
+As expected for strand-specific RNAseq data (dUTP approach), we obtained  almost exclusively reverse reads after realignments for the biggest library on the transcriptome (Fig. \@ref(fig:ssqc)).
+
+```{r ssqc, fig.cap="Caption."}
+data <- vroom("results/quality/reads_reps/ss_analysis.dat") %>% 
+  arrange(desc(total_reads)) %>% 
+  mutate(diff_ratio = diff_ratio + rnorm(nrow(.))/100)
+lapply(c(0.05, 0.1, 0.25, 0.5, 1), function(q)
+  data.frame(quantile = q, diff_ratio = data$diff_ratio[cumsum(data$total_reads) <= q * sum(data$total_reads)])) %>% 
+  bind_rows() %>% 
+  mutate(quantile = as.factor(quantile)) %>% 
+  ggplot(aes(quantile, diff_ratio)) +
+  geom_violin(fill = "darkorchid") +
+  ylim(-1, -0.5) +
+  stat_summary(fun = "median", geom = "point", col = "red") +
+  ylab("Ratio of forward versus reverse strand") + xlab("Quantile of the ratio distribution") +
+  coord_flip()
+rm(data)
+```
+
 
 ## Samples and biological Replicates
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/QC-Samples-and-Biological-Replicates).*
 
-Ensure that your biological replicates are well correlated, and investigate relationships among samples. If there are any obvious discrepancies among samples and replicate srelationships such as due to accidental mis-labeling of sample replicates, or strong outliers or batch effects, we'll identify them before proceeding to subsequent data analyses (such as differential expression).
+Ensure that your biological replicates are well correlated, and investigate relationships among samples. If there are any obvious discrepancies among samples and replicates relationships such as due to accidental mis-labeling of sample replicates, or strong outliers or batch effects, we'll identify them before proceeding to subsequent data analyses (such as differential expression).
+
+### *Neoponera goeldii* replicates
+
+```{r}
+include_graphics("results/quality/ptr/Neo_goel.rep_compare_bars.svg")
+```
+
+```{r}
+include_graphics("results/quality/ptr/Neo_goel.rep_compare_cor.svg")
+```
+
+### *Camponotus femoratus* replicates
+
+```{r}
+include_graphics("results/quality/ptr/Cam_femo.rep_compare_bars.svg")
+```
+
+```{r}
+include_graphics("results/quality/ptr/Cam_femo.rep_compare_cor.svg")
+```
+
+### Replicates across conditions
+
+Now let's compare replicates across all samples. The replicates are more highly correlated among than within biological replicates!
+
+```{r}
+include_graphics("results/quality/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.svg")
+```
+
+```{r}
+include_graphics("results/quality/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.centered.prcomp.principal_components.svg")
+```
 
 # Quantification
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Transcript-Quantification).*
+
+```{r}
+vroom("results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM") %>% 
+  ggplot(aes(neg_min_tpm, num_features)) +
+  geom_point() +
+  geom_line() +
+  scale_y_log10() +
+  ylab("Number of isoforms") + xlab("Negative minimum transcripts per million transcripts")
+```
+
+# Annotation
+
+## Coding regions
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Coding-Region-Identification-in-Trinity-Assemblies).*
+
+## Functional annotation
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Functional-Annotation-of-Transcripts).*
+
+## gene ontology enrichment
+
+*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-GOSeq).*
 
 # Differential expression
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Differential-Expression).*
 
 Our current system for identifying differentially expressed transcripts relies on using the `EdgeR` Bioconductor package. We have a protocol and scripts described below for identifying differentially expressed transcripts and clustering transcripts according to expression profiles. This process is somewhat interactive, and described are automated approaches as well as manual approaches to refining gene clusters and examining their corresponding expression patterns.
+
+```{r de, caption="Volcano plot."}
+f <- 2
+p <- 0.001
+de <- vroom("results/expression/voom/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results",
+            col_names = c("trsc", "condA", "condB", "logFC", "logCPM", "pvalue", "fdr"), skip = 1) %>% 
+  mutate(de = "no") %>% 
+  mutate(de = ifelse(logFC > f & fdr < p, "up", de)) %>% 
+  mutate(de = ifelse(logFC < -f & fdr < p, "down", de)) %>% 
+  mutate(lab = ifelse(de == "no", "", gsub("TRINITY_", "", trsc)))
+ggplot(de, aes(logFC, -log10(fdr), col = de, label = lab)) +
+  geom_point() +
+  scale_color_manual("Differential\nexpression", values=c("blue", "lightgrey", "red")) +
+  geom_vline(xintercept=c(-f, f), col = "red", linetype = "dotted") +
+  geom_hline(yintercept=-log10(p), col = "red", linetype = "dotted") +
+  ggrepel::geom_text_repel() +
+  xlab(expression(log[2]~Fold~Change)) +
+  ylab(expression(-log[10]~False~Discovery~Rate))
+```
+
+```{r}
+include_graphics("results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.svg")
+```
 
 # Super transcripts
 
@@ -148,22 +259,45 @@ knitr::include_graphics("https://raw.githubusercontent.com/wiki/trinityrnaseq/tr
 
 Using SuperTranscripts, we can explore differential transcript usage (DTU). Differential transcript usage analysis is complementary to differential gene expression (DGE) and differential transcript expression (DTE) analysis. For details on how DTU, DGE, and DTE compare, see "Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences" by Soneson, Love, and Robinson; F1000 2016. 
 
+```{r dtu, caption="Volcano plot."}
+f <- 2
+p <- 0.001
+dtu <- vroom("results/super/expression/DTU.dexseq.results.dat") %>% 
+  mutate(logFC = log2fold_Neo_goel_Cam_femo) %>% 
+  mutate(dtu = NA) %>%
+  mutate(dtu = ifelse(logFC > f & padj < p, "differentially-used", dtu)) %>% 
+  mutate(lab = ifelse(dtu == "no", "", gsub("TRINITY_", "", groupID))) %>% 
+  left_join(de %>% 
+              filter(de != "no") %>% 
+              mutate(featureID = gsub("_i\\d+$", "", trsc)) %>% 
+              dplyr::select(featureID, trsc, de)) %>% 
+  rowwise() %>% 
+  mutate(de = ifelse(!grepl(trsc, transcripts), NA, de)) %>% 
+  ungroup() %>% 
+  mutate(de = recode(de, "up" = "overexpressed", "down" = "underexpressed")) %>% 
+  mutate(due = NA) %>% 
+  mutate(due = ifelse(is.na(dtu) & !is.na(de), de, due)) %>% 
+  mutate(due = ifelse(!is.na(dtu) & is.na(de), dtu, due)) %>%
+  mutate(due = ifelse(!is.na(dtu) & !is.na(de), paste(dtu, "&", de), due)) %>% 
+  mutate(lab = ifelse(due == "differentially-used & overexpressed", gsub("TRINITY_", "", trsc), ""))
+ggplot(dtu, aes(logFC, -log10(padj), col = due, label = lab)) +
+  geom_point(data = filter(dtu, is.na(due)), alpha = 0.1) +
+  geom_point(data = filter(dtu, due == "differentially-used"), alpha = 0.2) +
+  geom_point(data = filter(dtu, !is.na(due) & due != "differentially-used" )) +
+  scale_color_manual("Usage and expression", values=c("green", "darkred", "red", "blue")) +
+  geom_vline(xintercept=f, col = "red", linetype = "dotted") +
+  geom_hline(yintercept=-log10(p), col = "red", linetype = "dotted") +
+  ggrepel::geom_text_repel() +
+  xlab(expression(log[2]~Fold~Change)) +
+  ylab(expression(-log[10]~False~Discovery~Rate))
+```
+
+```{r dtuex}
+include_graphics("results/super/expression/DTU.dexseq.svg")
+```
+
 ## Variant calling
 
 *Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Variant-Calling).*
-
-# Annotation
-
-## Coding regions
-
-*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Coding-Region-Identification-in-Trinity-Assemblies).*
-
-## Functional annotation
-
-*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Functional-Annotation-of-Transcripts).*
-
-## gene ontology enrichment
-
-*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-GOSeq).*
 
 # Conclusion
