@@ -25,7 +25,9 @@ rule all:
         "results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf",
         "results/super/trinity_genes.fasta", # super trsc 
         "results/super/trinity_genes.gtf",
-        "results/super/expression/DTU.dexseq.results.dat"
+        "results/super/expression/DTU.dexseq.results.dat",
+        # expand("results/super/variants/{lib}", lib=config["libraries"]) 
+        "results/super/variants"
 
 # Rules #
 
@@ -57,3 +59,4 @@ include: "rules/trinity_de_an.smk"
 ## super transcripts ## 
 include: "rules/trinity_super.smk"
 include: "rules/trinity_super_de.smk"
+include: "rules/trinity_super_vc.smk"
