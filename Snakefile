@@ -23,11 +23,15 @@ rule all:
         "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM",
         "results/expression/voom/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results", # de
         "results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf",
+        "results/annotation/transdecoder/aechmea.fa.transdecoder.pep", # annot 
+        "results/annotation/db/aechmea.sqlite",
+        "results/annotation/blastp/blastp.outfmt6",
+        "results/annotation/blastx/blastx.outfmt6",
         "results/super/trinity_genes.fasta", # super trsc 
         "results/super/trinity_genes.gtf",
-        "results/super/expression/DTU.dexseq.results.dat",
+        "results/super/expression/DTU.dexseq.results.dat"
         # expand("results/super/variants/{lib}", lib=config["libraries"]) 
-        "results/super/variants"
+        # "results/super/variants"
 
 # Rules #
 
@@ -51,6 +55,19 @@ include: "rules/trinity_quant_matrix.smk"
 include: "rules/trinity_quant_count.smk"
 
 ## annotation ## 
+# https://github.com/sarahinwood/trinotate-pipeline
+include: "rules/trinotate_db.smk"
+include: "rules/transdecoder.smk"
+include: "rules/tmhmm.smk"
+include: "rules/hmmscan.smk"
+include: "rules/blastp.smk"
+include: "rules/blastx.smk"
+include: "rules/rnammer.smk"
+#include: "rules/rename_fasta_headers.smk"
+#include: "rules/signalp.smk"
+#include: "rules/rename_gff.smk"
+#include: "rules/trinotate_load.smk"
+#include: "rules/trinotate_report.smk"
 
 ## differential expression ## 
 include: "rules/trinity_de.smk"
@@ -59,4 +76,6 @@ include: "rules/trinity_de_an.smk"
 ## super transcripts ## 
 include: "rules/trinity_super.smk"
 include: "rules/trinity_super_de.smk"
-include: "rules/trinity_super_vc.smk"
+include: "rules/star.smk"
+include: "rules/picard.smk"
+include: "rules/gatk.smk"
