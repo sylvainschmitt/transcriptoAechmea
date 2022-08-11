@@ -2,7 +2,7 @@ rule trinotate_load:
     input:
         fasta = "results/transcriptome/aechmea.fa",
         gene_trans_map = "results/transcriptome/aechmea.fa.gene_trans_map",
-        transdecoder = "results/annotation/transdecoder/Trinity.fasta.transdecoder.pep",
+        transdecoder = "results/annotation/transdecoder/aechmea.fa.transdecoder.pep",
         blastx = "results/annotation/blastx/blastx.outfmt6",
         blastp = "results/annotation/blastp/blastp.outfmt6",
         signalp = "results/annotation/signalp/signalp.renamed.out",

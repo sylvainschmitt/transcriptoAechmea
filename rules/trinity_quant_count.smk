@@ -4,7 +4,8 @@ rule trinity_quant_count:
         "results/quantification/RSEM.isoform.TPM.not_cross_norm"
     output:
         "results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM",
-        "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM"
+        "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM",
+        "results/quantification/RSEM.isoform.TMM.EXPR.matrix"
     log:
         "results/logs/trinity_quant_count.log"
     benchmark:

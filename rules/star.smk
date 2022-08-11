@@ -4,7 +4,7 @@ rule star:
         left=expand("{data}/{lib}_R1_001.fastq.gz", data=config["data"], lib=config["libraries"]),
         right=expand("{data}/{lib}_R2_001.fastq.gz", data=config["data"], lib=config["libraries"])
     output:
-        directory("results/super/variants")
+        "results/super/variants/x.bam"
     log:
         "results/logs/star.log"
     benchmark:
@@ -18,11 +18,12 @@ rule star:
         left_str=lambda wildcards, input: ",".join(input.left),
         right_str=lambda wildcards, input: ",".join(input.right),
         max_mem = lambda wildcards, resources: int(resources.mem_mb * 1024 * 1024),
-        dir="results/super/"
+        dir_in="results/super/",
+        dir_out="results/super/variants/"
     shell:
-        "STAR --runThreadN {threads} --genomeDir {params.dir} "
+        "STAR --runThreadN {threads} --genomeDir {params.dir_in} "
         "--runMode alignReads --twopassMode Basic --alignSJDBoverhangMin 10 "
         "--outSAMtype BAM SortedByCoordinate --limitBAMsortRAM 218601532341 "
         "--readFilesIn {params.left_str}, {params.right_str} "
-        "--outFileNamePrefix {output}"
+        "--outFileNamePrefix {params.dir_out}"
         

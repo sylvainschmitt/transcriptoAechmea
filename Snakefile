@@ -15,23 +15,23 @@ rule all:
         "results/quality/stats/aechmea_ExN50_stats.txt",
         "results/quality/reads_reps/ss_analysis.dat",
         "results/quality/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.pdf",
-        expand("results/quantification/{sample}/RSEM.{type}.results",
-                sample=samples["sample"], type=["isoforms", "genes"]), # quantif 
-        "results/quantification/RSEM.gene.TPM.not_cross_norm",
-        "results/quantification/RSEM.isoform.TPM.not_cross_norm",
-        "results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM",
-        "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM",
+        # expand("results/quantification/{sample}/RSEM.{type}.results",
+        #         sample=samples["sample"], type=["isoforms", "genes"]), # quantif 
+        # "results/quantification/RSEM.gene.TPM.not_cross_norm",
+        # "results/quantification/RSEM.isoform.TPM.not_cross_norm",
+        # "results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM",
+        # "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM",
         "results/expression/voom/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results", # de
         "results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf",
-        "results/annotation/transdecoder/aechmea.fa.transdecoder.pep", # annot 
-        "results/annotation/db/aechmea.sqlite",
-        "results/annotation/blastp/blastp.outfmt6",
-        "results/annotation/blastx/blastx.outfmt6",
-        "results/super/trinity_genes.fasta", # super trsc 
-        "results/super/trinity_genes.gtf",
-        "results/super/expression/DTU.dexseq.results.dat"
-        # expand("results/super/variants/{lib}", lib=config["libraries"]) 
-        # "results/super/variants"
+        # "results/annotation/transdecoder/aechmea.fa.transdecoder.pep", # annot 
+        # "results/annotation/db/aechmea.sqlite",
+        # "results/annotation/blastp/blastp.outfmt6",
+        # "results/annotation/blastx/blastx.outfmt6",
+        "results/trinotate_annotation_report.txt",
+        # "results/super/trinity_genes.fasta", # super trsc 
+        # "results/super/trinity_genes.gtf",
+        "results/super/expression/DTU.dexseq.results.dat",
+        "results/super/variants/output.filtered.vcf"
 
 # Rules #
 
@@ -63,11 +63,11 @@ include: "rules/hmmscan.smk"
 include: "rules/blastp.smk"
 include: "rules/blastx.smk"
 include: "rules/rnammer.smk"
-#include: "rules/rename_fasta_headers.smk"
-#include: "rules/signalp.smk"
-#include: "rules/rename_gff.smk"
-#include: "rules/trinotate_load.smk"
-#include: "rules/trinotate_report.smk"
+include: "rules/rename_fasta_headers.smk"
+include: "rules/signalp.smk"
+include: "rules/rename_gff.smk"
+include: "rules/trinotate_load.smk"
+include: "rules/trinotate_report.smk"
 
 ## differential expression ## 
 include: "rules/trinity_de.smk"

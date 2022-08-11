@@ -1,6 +1,6 @@
 rule signalp:
     input:
-        "results/annotation/transdecoder/aechmea.transdecoder.pep"
+        "results/annotation/signalp/aechmea.fa.transdecoder.pep.renamed"
     output:
         "results/annotation/signalp/signalp.out"
     log:

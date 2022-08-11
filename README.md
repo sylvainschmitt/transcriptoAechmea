@@ -6,15 +6,14 @@ May 31, 2022
   - [Installation](#installation)
   - [Usage](#usage)
       - [Locally](#locally)
-      - [genologin](#genologin)
       - [Tabebuia](#tabebuia)
   - [Workflow](#workflow)
       - [Transcriptome](#transcriptome)
       - [Quality check](#quality-check)
       - [Quantification](#quantification)
+      - [Annotation](#annotation)
       - [Differential expression](#differential-expression)
       - [Super transcripts](#super-transcripts)
-      - [Annotation](#annotation)
 
 [`singularity` &
 `snakemake`](https://github.com/sylvainschmitt/snakemake_singularity)
@@ -67,23 +66,13 @@ cd transcriptoAechmea
 ``` bash
 snakemake -np -j 3 --resources mem_mb=10000 # dry run
 snakemake --dag | dot -Tsvg > dag/dag.svg # dag
-snakemake --use-singularity -j 3 --resources mem_mb=10000 # run
-```
-
-## genologin
-
-``` bash
-module load bioinfo/snakemake-5.25.0 # for test on node
-snakemake -np # dry run
-sbatch job.sh # run
-snakemake --dag | dot -Tsvg > dag/dag.svg # dag
 ```
 
 ## Tabebuia
 
 ``` bash
-snakemake -np -j 15 # dry run
-snakemake -j 15 --use-singularity --singularity-args "\-B /home/ECOFOG/sylvain.schmitt/Documents/data/Aechmea" # run with binded data
+snakemake -np # dry run
+snakemake -j 30 --use-singularity --singularity-args "\-B /home/ECOFOG/sylvain.schmitt/Documents/data/Aechmea" # run with binded data
 snakemake --dag | dot -Tsvg > dag/dag.svg # dag
 ```
 
@@ -146,11 +135,6 @@ snakemake --dag | dot -Tsvg > dag/dag.svg # dag
   - Singularity:
     <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
 
-### [rnaquast](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/rnaquast.smk)
-
-  - Tools: [rnaquast](https://github.com/ablab/rnaquast)
-  - Singularity:
-
 ### [trinity PtR](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_ptr.smk)
 
   - Tools:
@@ -181,8 +165,124 @@ snakemake --dag | dot -Tsvg > dag/dag.svg # dag
   - Singularity:
     <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
 
+## Annotation
+
+### [trinotate db](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinotate_db.smk)
+
+  - Tools:
+    [Build\_Trinotate\_Boilerplate\_SQLite\_db.pl](https://github.com/Trinotate/Trinotate.github.io/wiki/Software-installation-and-data-required#2-sequence-databases-required)
+  - Singularity: docker://ss93/trinotate-3.2.1
+
+### [transdecoder](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/transdecoder.smk)
+
+  - Tools:
+    [TransDecoder](https://github.com/TransDecoder/TransDecoder/wiki)
+  - Singularity:
+    oras://registry.forgemia.inra.fr/gafl/singularity/transdecoder/transdecoder:latest
+
+### [tmhmm](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/tmhmm.smk)
+
+  - Tools:
+    [tmhmm](https://services.healthtech.dtu.dk/service.php?TMHMM-2.0)
+  - Singularity: docker://crhisllane/tmhmm:latest
+
+### [hmmscan](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/hmmscan.smk)
+
+  - Tools: [hmmscan](http://eddylab.org/software/hmmer/Userguide.pdf)
+  - Singularity: docker://dockerbiotools/hmmer:latest
+
+### [blastp](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/blastp.smk)
+
+  - Tools:
+    [blastp](https://ftp.ncbi.nlm.nih.gov/pub/factsheets/HowTo_BLASTGuide.pdf)
+  - Singularity: docker://ncbi/blast
+
+### [blastx](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/blastx.smk)
+
+  - Tools:
+    [blastx](https://ftp.ncbi.nlm.nih.gov/pub/factsheets/HowTo_BLASTGuide.pdf)
+  - Singularity: docker://ncbi/blast
+
+### [rnammer](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/rnammer.smk)
+
+  - Tools:
+    [RnammerTranscriptome.pl](https://github.com/Trinotate/Trinotate.github.io/wiki/Software-installation-and-data-required#running-rnammer-to-identify-rrna-transcripts)
+  - Singularity: docker://quay.io/biocontainer/trinotate
+
+### [rename\_fasta\_headers](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/rename_fasta_headers.smk)
+
+  - Script:
+    [rename\_fasta\_headers.py](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/scripts/rename_fasta_headers.py)
+
+### [signalp](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/signalp.smk)
+
+  - Tools:
+    [signalp](https://services.healthtech.dtu.dk/service.php?SignalP-5.0)
+  - Singularity: <https://github.com/biocorecrg/interproscan_docker>
+
+### [rename\_gff](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/rename_gff.smk)
+
+  - Script:
+    [rename\_gff.R](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/scripts/rename_gff.R)
+
+### [trinotate load](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinotate_load.smk)
+
+  - Tools: [Trinotate
+    LOAD\_\*](https://github.com/Trinotate/Trinotate.github.io/wiki/Loading-generated-results-into-a-Trinotate-SQLite-Database-and-Looking-the-Output-Annotation-Report)
+  - Singularity: docker://ss93/trinotate-3.2.1
+
+### [trinotate report](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinotate_report.smk)
+
+  - Tools: [Trinotate
+    report](https://github.com/Trinotate/Trinotate.github.io/wiki/Loading-generated-results-into-a-Trinotate-SQLite-Database-and-Looking-the-Output-Annotation-Report#trinotate-output-an-annotation-report)
+  - Singularity: docker://ss93/trinotate-3.2.1
+
 ## Differential expression
+
+### [trinity DE](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_de.smk)
+
+  - Tools:
+    [run\_DE\_analysis.pl](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Differential-Expression#running-differential-expression-analysis)
+  - Singularity:
+    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
+
+### [trinity DEA](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_de_an.smk)
+
+  - Tools:
+    [analyze\_diff\_expr.pl](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Differential-Expression#extracting-and-clustering-differentially-expressed-transcripts)
+  - Singularity:
+    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
 
 ## Super transcripts
 
-## Annotation
+### [trinity super](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_super.smk)
+
+  - Tools:
+    [Trinity\_gene\_splice\_modeler.py](https://github.com/trinityrnaseq/trinityrnaseq/wiki/SuperTranscripts)
+  - Singularity:
+    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
+
+### [trinity super DU](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_super_de.smk)
+
+  - Tools:
+    [dexseq\_wrapper.pl](https://github.com/trinityrnaseq/trinityrnaseq/wiki/DiffTranscriptUsage)
+  - Singularity:
+    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
+
+### [star](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/star.smk)
+
+  - Tools:
+    [STAR](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)
+  - Singularity: docker://mgibio/star
+
+### [picard](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/picard.smk)
+
+  - Tools:
+    [PICARD](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-)
+  - Singularity: docker://broadinstitute/gatk:4.2.6.1
+
+### [gatk](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/gatk.smk)
+
+  - Tools:
+    [GATK4](https://gatk.broadinstitute.org/hc/en-us/articles/360037225632-HaplotypeCaller)
+  - Singularity: docker://broadinstitute/gatk:4.2.6.1

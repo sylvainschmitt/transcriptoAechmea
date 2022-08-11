@@ -2,7 +2,7 @@ rule picard:
     input:
         "results/super/variants/x.bam"
     output:
-        "results/super/variants/x.md.bam"
+        "results/super/variants/x.md.bam",
         "results/super/variants/x.bam.metrics"
     log:
         "results/logs/picard.log"
@@ -14,5 +14,5 @@ rule picard:
     resources:
         mem_mb=150000
     shell:
-        "gatk MarkDuplicates --java-options \"-Xmx150G -Xms1G" I={input} O={output[0]} M={output[1]}"
+        "gatk MarkDuplicates --java-options \"-Xmx150G -Xms1G\" I={input} O={output[0]} M={output[1]}"
         
