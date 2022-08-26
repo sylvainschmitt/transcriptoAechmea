@@ -1,7 +1,7 @@
 rule hmmscan:
     input:
         "results/annotation/transdecoder/aechmea.fa.transdecoder.pep",
-        "results/annotation/db/Pfam-A.hmm.gz"
+        "results/annotation/db/Pfam-A.hmm"
     output:
         "results/annotation/hmmer/TrinotatePFAM.out"
     log:

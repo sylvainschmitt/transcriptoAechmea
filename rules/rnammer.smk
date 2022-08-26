@@ -9,8 +9,8 @@ rule rnammer:
     benchmark:
         "results/benchmarks/rnammer.benchmark.txt"
     singularity:
-        "docker://quay.io/biocontainer/trinotate"
+        "docker://ss93/trinotate-3.2.1"
     threads: 1
     shell:
-        "$TRINOTATE_HOME/util/rnammer_support/RnammerTranscriptome.pl ---transcriptome {input[0]} --path_to_rnammer {input[1]} ;"
+        "/usr/local/bin/RnammerTranscriptome.pl --transcriptome {input[0]} --path_to_rnammer {input[1]} ;"
         

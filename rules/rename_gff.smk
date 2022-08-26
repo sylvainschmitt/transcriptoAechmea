@@ -1,6 +1,6 @@
 rule rename_gff:
     input:
-        signalp_gff = "results/annotation/signalp/signalp.out",
+        signalp_gff = "results/annotation/signalp/signalp.out.gff3",
         ids = "results/annotation/signalp/aechmea.fa.transdecoder.pep.ids"
     output:
         signalp_renamed_gff = "results/annotation/signalp/signalp.renamed.out"

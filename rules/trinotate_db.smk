@@ -2,7 +2,7 @@ rule trinotate_db:
     output:
         "results/annotation/db/aechmea.sqlite",
         "results/annotation/db/uniprot_sprot.pep",
-        "results/annotation/db/Pfam-A.hmm.gz"
+        "results/annotation/db/Pfam-A.hmm"
     log:
         "results/logs/trinotate_db.log"
     benchmark:

@@ -1,3 +1,4 @@
+* transcriptoAechmea - 0.1.9007: last for Symphonia
 * transcriptoAechmea - 0.1.9006: full workflow with doc (vc to finish)
 * transcriptoAechmea - 0.1.9005: annotation & homemade variants draft
 * transcriptoAechmea - 0.1.9004: trinity super vc (not working)
