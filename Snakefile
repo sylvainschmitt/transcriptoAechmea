@@ -5,6 +5,8 @@ configfile: "config/config.yml"
 samples = pd.read_csv("data/sample.tsv", sep="\t", 
                       names=["condition", "sample", "R1", "R2"])
 
+types=["full", "run1a", "run2"]
+
 rule all:
    input:
         "results/transcriptome/aechmea.fa", # trsc 
@@ -14,20 +16,23 @@ rule all:
         "results/quality/stats/aechmea_stats.txt",
         "results/quality/stats/aechmea_ExN50_stats.txt",
         "results/quality/reads_reps/ss_analysis.dat",
-        "results/quality/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.pdf",
         # expand("results/quantification/{sample}/RSEM.{type}.results",
         #         sample=samples["sample"], type=["isoforms", "genes"]), # quantif 
         # "results/quantification/RSEM.gene.TPM.not_cross_norm",
         # "results/quantification/RSEM.isoform.TPM.not_cross_norm",
         # "results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM",
         # "results/quantification/RSEM.isoform.TPM.not_cross_norm.counts_by_min_TPM",
-        "results/expression/voom/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results", # de
-        "results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf",
+        expand("results/expression/{type}/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.pdf", 
+                type=types), # de
+        expand("results/expression/{type}/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results", type=types),
+        expand("results/expression/{type}/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf", type=types),
         # "results/annotation/transdecoder/aechmea.fa.transdecoder.pep", # annot 
         # "results/annotation/db/aechmea.sqlite",
         # "results/annotation/blastp/blastp.outfmt6",
         # "results/annotation/blastx/blastx.outfmt6",
-        "results/trinotate_annotation_report.txt",
+        "results/annotation/trinotate_annotation_report.txt",
+        "results/annotation/trinotate_table_fields.txt",
+        "results/annotation/trinotate_go_annotations.txt",
         # "results/super/trinity_genes.fasta", # super trsc 
         # "results/super/trinity_genes.gtf",
         "results/super/expression/DTU.dexseq.results.dat",
@@ -47,7 +52,6 @@ include: "rules/trinity_stats.smk" # n50
 include: "rules/trinity_stats2.smk" # e90n50
 include: "rules/samtools_view.smk" # strand specificity
 include: "rules/trinity_strand.smk"
-include: "rules/trinity_ptr.smk"
 
 ## quantification ## 
 include: "rules/trinity_quantification.smk"
@@ -68,9 +72,13 @@ include: "rules/signalp.smk"
 include: "rules/rename_gff.smk"
 include: "rules/trinotate_load.smk"
 include: "rules/trinotate_report.smk"
+include: "rules/trinotate_summary.smk"
+include: "rules/trinotate_go.smk"
 
 ## differential expression ## 
+include: "rules/trinity_ptr.smk"
 include: "rules/trinity_de.smk"
+include: "rules/trinity_gene_length.smk"
 include: "rules/trinity_de_an.smk"
 
 ## super transcripts ## 

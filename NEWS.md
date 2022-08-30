@@ -1,3 +1,4 @@
+* transcriptoAechmea - 0.1.9008: annotation and corresponding DE
 * transcriptoAechmea - 0.1.9007: last for Symphonia
 * transcriptoAechmea - 0.1.9006: full workflow with doc (vc to finish)
 * transcriptoAechmea - 0.1.9005: annotation & homemade variants draft

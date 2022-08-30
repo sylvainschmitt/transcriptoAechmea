@@ -1,15 +1,22 @@
 rule trinity_de:
     input:
         "results/quantification/RSEM.isoform.TMM.EXPR.matrix",
-        "data/sample.tsv"
+        "data/sample_{type}.tsv"
     output:
-        "results/expression/voom/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results"
+        "results/expression/{type}/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results"
     log:
-        "results/logs/trinity_de.log"
+        "results/logs/trinity_de_{type}.log"
     benchmark:
-        "results/benchmarks/trinity_de.benchmark.txt"
+        "results/benchmarks/trinity_de_{type}.benchmark.txt"
     singularity:
         "/home/ECOFOG/sylvain.schmitt/Documents/singularity/trinity.simg"
+    params:
+        dir="results/expression/{type}",
+        sample="sample_{type}.tsv"
     shell:
-        "$TRINITY_HOME/Analysis/DifferentialExpression/run_DE_analysis.pl --matrix {input[0]} --samples {input[1]} --method voom "
+        "cp {input[0]} {params.dir} ; "
+        "cp {input[1]} {params.dir} ; "
+        "cd {params.dir} ; "
+        "pwd ; "
+        "$TRINITY_HOME/Analysis/DifferentialExpression/run_DE_analysis.pl --matrix RSEM.isoform.TMM.EXPR.matrix --samples {params.sample} --method voom "
         

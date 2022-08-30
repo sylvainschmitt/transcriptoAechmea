@@ -2,7 +2,7 @@ rule trinotate_report:
     input:
         "results/annotation/aechmea.sqlite"
     output:
-        "results/trinotate_annotation_report.txt"
+        "results/annotation/trinotate_annotation_report.txt"
     log:
         "results/logs/trinotate_report.log"
     benchmark:

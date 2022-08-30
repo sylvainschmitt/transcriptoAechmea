@@ -23,5 +23,5 @@ rule trinity:
         dir="results/transcriptome/trinity"
     shell:
         "Trinity --seqType fq --left {params.left_str} --right {params.right_str} --SS_lib_type RF --trimmomatic --max_memory {params.max_mem}G --CPU {threads} --output {output[0]} ; "
-        "mv {params.dir}trinity.Trinity.fasta {output[1]} ;"
-        "mv {params.dir}trinity.Trinity.fasta.gene_trans_map {output[2]}"
+        "mv {params.dir} trinity.Trinity.fasta {output[1]} ;"
+        "mv {params.dir} trinity.Trinity.fasta.gene_trans_map {output[2]}"

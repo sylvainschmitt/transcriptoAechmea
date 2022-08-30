@@ -8,7 +8,7 @@ rule trinotate_load:
         signalp = "results/annotation/signalp/signalp.renamed.out",
         tmhmm = "results/annotation/tmhmm/tmhmm.out", 
         hmmer = "results/annotation/hmmer/TrinotatePFAM.out",
-        rnammer = "results/annotation/rnammer/Trinity.fasta.rnammer.gff",
+        # rnammer = "results/annotation/rnammer/Trinity.fasta.rnammer.gff",
         db = "results/annotation/db/aechmea.sqlite"
     output:
         "results/annotation/aechmea.sqlite"
@@ -28,5 +28,5 @@ rule trinotate_load:
         'Trinotate {output} LOAD_pfam {input.hmmer} ; '
         'Trinotate {output} LOAD_tmhmm {input.tmhmm} ; '
         'Trinotate {output} LOAD_signalp {input.signalp} ; '
-        'Trinotate {output} LOAD_rnammer {input.rnammer}'
+        # 'Trinotate {output} LOAD_rnammer {input.rnammer}'
         
