@@ -153,36 +153,106 @@ rm(data)
 
 Ensure that your biological replicates are well correlated, and investigate relationships among samples. If there are any obvious discrepancies among samples and replicates relationships such as due to accidental mis-labeling of sample replicates, or strong outliers or batch effects, we'll identify them before proceeding to subsequent data analyses (such as differential expression).
 
-### *Neoponera goeldii* replicates
+### Full data
+
+#### *Neoponera goeldii* replicates
 
 ```{r}
-include_graphics("results/quality/ptr/Neo_goel.rep_compare_bars.svg")
+include_graphics("results/expression/full/ptr/Neo_goel.rep_compare_bars.svg")
 ```
 
 ```{r}
-include_graphics("results/quality/ptr/Neo_goel.rep_compare_cor.svg")
+include_graphics("results/expression/full//ptr/Neo_goel.rep_compare_cor.svg")
 ```
 
-### *Camponotus femoratus* replicates
+#### *Camponotus femoratus* replicates
 
 ```{r}
-include_graphics("results/quality/ptr/Cam_femo.rep_compare_bars.svg")
+include_graphics("results/expression/full/ptr/Cam_femo.rep_compare_bars.svg")
 ```
 
 ```{r}
-include_graphics("results/quality/ptr/Cam_femo.rep_compare_cor.svg")
+include_graphics("results/expression/full/ptr/Cam_femo.rep_compare_cor.svg")
 ```
 
-### Replicates across conditions
+#### *Replicates across conditions
 
 Now let's compare replicates across all samples. The replicates are more highly correlated among than within biological replicates!
 
 ```{r}
-include_graphics("results/quality/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.svg")
+include_graphics("results/expression/full/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.svg")
 ```
 
 ```{r}
-include_graphics("results/quality/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.centered.prcomp.principal_components.svg")
+include_graphics("results/expression/full/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.centered.prcomp.principal_components.svg")
+```
+
+### Run 1a
+
+#### *Neoponera goeldii* replicates
+
+```{r}
+include_graphics("results/expression/run1a/ptr/Neo_goel.rep_compare_bars.svg")
+```
+
+```{r}
+include_graphics("results/expression/run1a/ptr/Neo_goel.rep_compare_cor.svg")
+```
+
+#### *Camponotus femoratus* replicates
+
+```{r}
+include_graphics("results/expression/run1a/ptr/Cam_femo.rep_compare_bars.svg")
+```
+
+```{r}
+include_graphics("results/expression/run1a/ptr/Cam_femo.rep_compare_cor.svg")
+```
+
+#### *Replicates across conditions
+
+Now let's compare replicates across all samples. The replicates are more highly correlated among than within biological replicates!
+
+```{r}
+include_graphics("results/expression/run1a/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.svg")
+```
+
+```{r}
+include_graphics("results/expression/run1a/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.centered.prcomp.principal_components.svg")
+```
+
+### Run 2
+
+#### *Neoponera goeldii* replicates
+
+```{r}
+include_graphics("results/expression/run2/ptr/Neo_goel.rep_compare_bars.svg")
+```
+
+```{r}
+include_graphics("results/expression/run2/ptr/Neo_goel.rep_compare_cor.svg")
+```
+
+#### *Camponotus femoratus* replicates
+
+```{r}
+include_graphics("results/expression/run2/ptr/Cam_femo.rep_compare_bars.svg")
+```
+
+```{r}
+include_graphics("results/expression/run2/ptr/Cam_femo.rep_compare_cor.svg")
+```
+
+#### *Replicates across conditions
+
+Now let's compare replicates across all samples. The replicates are more highly correlated among than within biological replicates!
+
+```{r}
+include_graphics("results/expression/run2/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.sample_cor_matrix.svg")
+```
+
+```{r}
+include_graphics("results/expression/run2/ptr/RSEM.isoform.TMM.EXPR.matrix.minRow10.CPM.log2.centered.prcomp.principal_components.svg")
 ```
 
 # Quantification
@@ -200,17 +270,18 @@ vroom("results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM") %
 
 # Annotation
 
-## Coding regions
+*Methodology from [trinotate](https://github.com/Trinotate/Trinotate.github.io/wiki).*
 
-*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Coding-Region-Identification-in-Trinity-Assemblies).*
+```{r}
+vroom("results/annotation/trinotate_table_fields.txt", col_names = c("type", "number")) %>% 
+  mutate(type = gsub("_", " ", type)) %>% 
+  ggplot(aes(type, number)) +
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label = format(number, big.mark = ' ')), nudge_y = 25000) +
+  ylab("")
+```
 
-## Functional annotation
-
-*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Functional-Annotation-of-Transcripts).*
-
-## gene ontology enrichment
-
-*Methodology from [trinity](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-GOSeq).*
 
 # Differential expression
 
@@ -218,10 +289,12 @@ vroom("results/quantification/RSEM.gene.TPM.not_cross_norm.counts_by_min_TPM") %
 
 Our current system for identifying differentially expressed transcripts relies on using the `EdgeR` Bioconductor package. We have a protocol and scripts described below for identifying differentially expressed transcripts and clustering transcripts according to expression profiles. This process is somewhat interactive, and described are automated approaches as well as manual approaches to refining gene clusters and examining their corresponding expression patterns.
 
-```{r de, caption="Volcano plot."}
+## Full
+
+```{r defull, caption="Volcano plot."}
 f <- 2
 p <- 0.001
-de <- vroom("results/expression/voom/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results",
+de <- vroom("results/expression/full/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results",
             col_names = c("trsc", "condA", "condB", "logFC", "logCPM", "pvalue", "fdr"), skip = 1) %>% 
   mutate(de = "no") %>% 
   mutate(de = ifelse(logFC > f & fdr < p, "up", de)) %>% 
@@ -238,7 +311,53 @@ ggplot(de, aes(logFC, -log10(fdr), col = de, label = lab)) +
 ```
 
 ```{r}
-include_graphics("results/expression/voom/analysis/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.svg")
+include_graphics("results/expression/full/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.svg")
+```
+
+## Run 1a
+
+```{r derun1a, caption="Volcano plot."}
+f <- 2
+p <- 0.001
+de <- vroom("results/expression/run1a/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results",
+            col_names = c("trsc", "condA", "condB", "logFC", "logCPM", "pvalue", "fdr"), skip = 1) %>% 
+  mutate(de = "no") %>% 
+  mutate(de = ifelse(logFC > f & fdr < p, "up", de)) %>% 
+  mutate(de = ifelse(logFC < -f & fdr < p, "down", de)) %>% 
+  mutate(lab = ifelse(de == "no", "", gsub("TRINITY_", "", trsc)))
+ggplot(de, aes(logFC, -log10(fdr), col = de, label = lab)) +
+  geom_point() +
+  scale_color_manual("Differential\nexpression", values=c("lightgrey")) +
+  geom_vline(xintercept=c(-f, f), col = "red", linetype = "dotted") +
+  geom_hline(yintercept=-log10(p), col = "red", linetype = "dotted") +
+  ggrepel::geom_text_repel() +
+  xlab(expression(log[2]~Fold~Change)) +
+  ylab(expression(-log[10]~False~Discovery~Rate))
+```
+
+## Run 2
+
+```{r derun2, caption="Volcano plot."}
+f <- 2
+p <- 0.001
+de <- vroom("results/expression/run2/RSEM.isoform.TMM.EXPR.matrix.Cam_femo_vs_Neo_goel.voom.DE_results",
+            col_names = c("trsc", "condA", "condB", "logFC", "logCPM", "pvalue", "fdr"), skip = 1) %>% 
+  mutate(de = "no") %>% 
+  mutate(de = ifelse(logFC > f & fdr < p, "up", de)) %>% 
+  mutate(de = ifelse(logFC < -f & fdr < p, "down", de)) %>% 
+  mutate(lab = ifelse(de == "no", "", gsub("TRINITY_", "", trsc)))
+ggplot(de, aes(logFC, -log10(fdr), col = de, label = lab)) +
+  geom_point() +
+  scale_color_manual("Differential\nexpression", values=c("blue", "lightgrey", "red")) +
+  geom_vline(xintercept=c(-f, f), col = "red", linetype = "dotted") +
+  geom_hline(yintercept=-log10(p), col = "red", linetype = "dotted") +
+  ggrepel::geom_text_repel() +
+  xlab(expression(log[2]~Fold~Change)) +
+  ylab(expression(-log[10]~False~Discovery~Rate))
+```
+
+```{r}
+include_graphics("results/expression/run2/diffExpr.P1e-3_C2.matrix.log2.centered.genes_vs_samples_heatmap.svg")
 ```
 
 # Super transcripts

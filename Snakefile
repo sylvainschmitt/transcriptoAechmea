@@ -36,7 +36,7 @@ rule all:
         # "results/super/trinity_genes.fasta", # super trsc 
         # "results/super/trinity_genes.gtf",
         "results/super/expression/DTU.dexseq.results.dat",
-        # "results/super/variants/output.filtered.vcf"
+        "results/super/variants/output.filtered.vcf"
 
 # Rules #
 
@@ -60,12 +60,12 @@ include: "rules/trinity_quant_count.smk"
 
 ## annotation ## 
 # https://github.com/sarahinwood/trinotate-pipeline
-#include: "rules/trinotate_db.smk"
+include: "rules/trinotate_db.smk"
 include: "rules/transdecoder.smk"
 include: "rules/tmhmm.smk"
 include: "rules/hmmscan.smk"
-#include: "rules/blastp.smk"
-#include: "rules/blastx.smk"
+include: "rules/blastp.smk"
+include: "rules/blastx.smk"
 include: "rules/rnammer.smk"
 include: "rules/rename_fasta_headers.smk"
 include: "rules/signalp.smk"

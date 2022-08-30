@@ -135,13 +135,6 @@ snakemake --dag | dot -Tsvg > dag/dag.svg # dag
   - Singularity:
     <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
 
-### [trinity PtR](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_ptr.smk)
-
-  - Tools:
-    [PtR](https://github.com/trinityrnaseq/trinityrnaseq/wiki/QC-Samples-and-Biological-Replicates)
-  - Singularity:
-    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
-
 ## Quantification
 
 ### [trinity quantification](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_quantification.smk)
@@ -237,12 +230,38 @@ snakemake --dag | dot -Tsvg > dag/dag.svg # dag
     report](https://github.com/Trinotate/Trinotate.github.io/wiki/Loading-generated-results-into-a-Trinotate-SQLite-Database-and-Looking-the-Output-Annotation-Report#trinotate-output-an-annotation-report)
   - Singularity: docker://ss93/trinotate-3.2.1
 
+### [trinotate summary](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinotate_summary.smk)
+
+  - Tools: [Trinotate
+    summary](https://github.com/Trinotate/Trinotate.github.io/wiki/Loading-generated-results-into-a-Trinotate-SQLite-Database-and-Looking-the-Output-Annotation-Report#trinotate-output-an-annotation-report)
+  - Singularity: docker://ss93/trinotate-3.2.1
+
+### [trinotate GO](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinotate_go.smk)
+
+  - Tools: [Trinotate
+    GO](https://github.com/Trinotate/Trinotate.github.io/wiki/Loading-generated-results-into-a-Trinotate-SQLite-Database-and-Looking-the-Output-Annotation-Report#trinotate-output-an-annotation-report)
+  - Singularity: docker://ss93/trinotate-3.2.1
+
 ## Differential expression
+
+### [trinity PtR](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_ptr.smk)
+
+  - Tools:
+    [PtR](https://github.com/trinityrnaseq/trinityrnaseq/wiki/QC-Samples-and-Biological-Replicates)
+  - Singularity:
+    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
 
 ### [trinity DE](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_de.smk)
 
   - Tools:
     [run\_DE\_analysis.pl](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Differential-Expression#running-differential-expression-analysis)
+  - Singularity:
+    <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
+
+### [trinity gene lengths](https://github.com/sylvainschmitt/transcriptoAechmea/blob/main/rules/trinity_gene_lengths.smk)
+
+  - Tools:
+    [TPM\_weighted\_gene\_length.py](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-GOSeq#run-goseq)
   - Singularity:
     <https://data.broadinstitute.org/Trinity/TRINITY_SINGULARITY/trinityrnaseq.v2.14.0.simg>
 
